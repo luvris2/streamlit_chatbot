@@ -7,6 +7,8 @@ import json
 import joblib
 
 model = joblib.load('data/AI_chatbot.pkl')
+df = pd.read_csv('data/wellness_dataset.csv')
+df['embedding'] = df['embedding'].apply(json.loads)
 
 # @st.cache(allow_output_mutation=True)
 # def cached_model():
@@ -21,7 +23,7 @@ def get_dataset():
     return df
 
 #model = cached_model()
-df = get_dataset()
+#df = get_dataset()
 
 st.header('심리상담 챗봇')
 
@@ -44,9 +46,11 @@ if submitted and user_input:
     df['similarity'] = df['embedding'].map(lambda x: cosine_similarity([embedding], [x]).squeeze())
     answer = df.loc[ df['similarity'].idxmax() ] # 가장 유사한 답변을 저장
 
+    # 유저와 챗봇의 대화 내용을 저장
     st.session_state.past.append(user_input)
     st.session_state.generated.append(answer['챗봇'])
-# ??? 유저와 챗봇 대화 내용 추가 (대화 내용 보여주기)
+
+# 저장된 대화 내용 보여주기
 for i in range(len(st.session_state['past'])):
     message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
     if len(st.session_state['generated']) > i:
