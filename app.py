@@ -6,24 +6,24 @@ from sklearn.metrics.pairwise import cosine_similarity
 import json
 import joblib
 
-model = joblib.load('data/AI_chatbot.pkl')
-df = pd.read_csv('data/wellness_dataset.csv')
-df['embedding'] = df['embedding'].apply(json.loads)
+# model = joblib.load('data/AI_chatbot.pkl')
+# df = pd.read_csv('data/wellness_dataset.csv')
+# df['embedding'] = df['embedding'].apply(json.loads)
 
-# @st.cache(allow_output_mutation=True)
-# def cached_model():
-#     #model = joblib.load('data/AI_chatbot.pkl')
-#     model = SentenceTransformer('jhgan/ko-sroberta-multitask')
-#     return model
+@st.cache(allow_output_mutation=True)
+def cached_model():
+    #model = joblib.load('data/AI_chatbot.pkl')
+    model = SentenceTransformer('jhgan/ko-sroberta-multitask')
+    return model
 
-# @st.cache(allow_output_mutation=True)
-# def get_dataset():
-#     df = pd.read_csv('data/wellness_dataset.csv')
-#     df['embedding'] = df['embedding'].apply(json.loads)
-#     return df
+@st.cache(allow_output_mutation=True)
+def get_dataset():
+    df = pd.read_csv('data/wellness_dataset.csv')
+    df['embedding'] = df['embedding'].apply(json.loads)
+    return df
 
-#model = cached_model()
-#df = get_dataset()
+model = cached_model()
+df = get_dataset()
 
 st.header('심리상담 챗봇')
 
