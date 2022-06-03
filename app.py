@@ -16,11 +16,11 @@ df['embedding'] = df['embedding'].apply(json.loads)
 #     model = SentenceTransformer('jhgan/ko-sroberta-multitask')
 #     return model
 
-@st.cache(allow_output_mutation=True)
-def get_dataset():
-    df = pd.read_csv('data/wellness_dataset.csv')
-    df['embedding'] = df['embedding'].apply(json.loads)
-    return df
+# @st.cache(allow_output_mutation=True)
+# def get_dataset():
+#     df = pd.read_csv('data/wellness_dataset.csv')
+#     df['embedding'] = df['embedding'].apply(json.loads)
+#     return df
 
 #model = cached_model()
 #df = get_dataset()
