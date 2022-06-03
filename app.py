@@ -1,20 +1,18 @@
 import streamlit as st
 from streamlit_chat import message
 import pandas as pd
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer #sentenceBERT 모델 사용
 from sklearn.metrics.pairwise import cosine_similarity
 import json
 import joblib
-try:
-    from typing import Literal # 파이썬 3.8
-except ImportError:
-    from typing_extensions import Literal # 파이썬 3.7 이하
 
-@st.cache(allow_output_mutation=True)
-def cached_model():
-    model = joblib.load('data/AI_chatbot.pkl')
-    #model = SentenceTransformer('jhgan/ko-sroberta-multitask')
-    return model
+model = joblib.load('data/AI_chatbot.pkl')
+
+# @st.cache(allow_output_mutation=True)
+# def cached_model():
+#     #model = joblib.load('data/AI_chatbot.pkl')
+#     model = SentenceTransformer('jhgan/ko-sroberta-multitask')
+#     return model
 
 @st.cache(allow_output_mutation=True)
 def get_dataset():
@@ -22,11 +20,10 @@ def get_dataset():
     df['embedding'] = df['embedding'].apply(json.loads)
     return df
 
-model = cached_model()
+#model = cached_model()
 df = get_dataset()
 
 st.header('심리상담 챗봇')
-st.markdown('심리상담 챗봇입니다.')
 
 if 'generated' not in st.session_state:
     st.session_state['generated'] = []
@@ -42,12 +39,11 @@ with st.form('form', clear_on_submit=True):
 
 # 메시지를 입력 후 전송을 누를 경우
 if submitted and user_input:
-    embedding = model.encode(user_input)
-    # 입력한 메시지의 유사도를 확인하여 가장 가까운 답변을 제시
-    df['distance'] = df['embedding'].map(lambda x: cosine_similarity([embedding], [x]).squeeze())
-    answer = df.loc[ df['distance'].idxmax() ]
+    embedding = model.encode(user_input) # 유저가 입력한 문장을 벡터라이징
+    # 입력한 메시지의 유사도를 확인하여 가장 유사한 답변을 제시
+    df['similarity'] = df['embedding'].map(lambda x: cosine_similarity([embedding], [x]).squeeze())
+    answer = df.loc[ df['similarity'].idxmax() ] # 가장 유사한 답변을 저장
 
-    # ???
     st.session_state.past.append(user_input)
     st.session_state.generated.append(answer['챗봇'])
 # ??? 유저와 챗봇 대화 내용 추가 (대화 내용 보여주기)
