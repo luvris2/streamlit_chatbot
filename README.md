@@ -1,1 +1,1 @@
-# streamlit_titanic_practice
+# streamlit_corona
